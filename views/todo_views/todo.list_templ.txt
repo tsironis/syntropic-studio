@@ -1,0 +1,15 @@
+<div class=\"flex justify-between max-w-2xl mx-auto border-b border-b-slate-600 mb-8 pb-2\"><h1 class=\"text-2xl font-bold text-center\">
+</h1><a hx-swap=\"transition:true\" class=\"btn btn-info p-4 hover:scale-[1.1]\" href=\"/todo/create\">New</a></div><section class=\"overflow-auto max-w-2xl max-h-96 mx-auto rounded-lg shadow-xl\"><table class=\"table table-zebra\"><!-- head --><thead class=\"\"><tr><th></th><th>Tasks</th><th>Status</th><th class=\"text-center\">Options</th></tr></thead> 
+<tbody>
+<tr><th>
+</th><td>
+</td><td>
+✅
+❌
+</td><td class=\"flex justify-center gap-2\"><a hx-swap=\"transition:true\" href=\"
+\" class=\"btn btn-primary p-3 hover:scale-[1.1]\">Edit</a> <button hx-swap=\"transition:true\" hx-delete=\"
+\" hx-confirm=\"
+\" onClick=\"this.addEventListener(&#39;htmx:confirm&#39;, (e) =&gt; {\n\t\t\t\t\t\t\t\t\t\te.preventDefault()\n\t\t\t\t\t\t\t\t\t\tSwal.fire({\n\t\t\t\t\t\t\t\t\t\t\ttitle: &#39;Do you want to perform this action?&#39;,\n\t\t\t\t\t\t\t\t\t\t\ttext: `${e.detail.question}`,\n\t\t\t\t\t\t\t\t\t\t\ticon: &#39;warning&#39;,\n\t\t\t\t\t\t\t\t\t\t\tbackground: &#39;#1D232A&#39;,\n\t\t\t\t\t\t\t\t\t\t\tcolor: &#39;#A6ADBA&#39;,\n\t\t\t\t\t\t\t\t\t\t\tshowCancelButton: true,\n\t\t\t\t\t\t\t\t\t\t\tconfirmButtonColor: &#39;#3085d6&#39;,\n\t\t\t\t\t\t\t\t\t\t\tcancelButtonColor: &#39;#d33&#39;,\n\t\t\t\t\t\t\t\t\t\t\tconfirmButtonText: &#39;Yes, delete it!&#39;\n\t\t\t\t\t\t\t\t\t\t}).then((result) =&gt; {\n\t\t\t\t\t\t\t\t\t\t\tif(result.isConfirmed) e.detail.issueRequest(true);\n\t\t\t\t\t\t\t\t\t\t})\n\t\t\t\t\t\t\t\t\t})\" hx-target=\"body\" class=\"btn btn-error p-3 hover:scale-[1.1]\">Delete</button></td></tr>
+</tbody>
+<tbody><tr><td colspan=\"4\" align=\"center\">You do not have anything to do</td></tr></tbody>
+</table></section>

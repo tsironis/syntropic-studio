@@ -1,0 +1,39 @@
+package layout
+
+import "github.com/tsironis/syntropic-studio/views/partials"
+
+templ Base(title, username string, fromProtected, isError bool, errMsgs, sucMsgs []string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta
+				name="description"
+				content="Go/Echo+Templ+Htmx: Full stack application using Golang's Echo framework & Templ templating language with user session management + CRUD to a SQLite database (To Do List) and HTMX in the frontend"
+			/>
+			<meta name="google" content="notranslate"/>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+			<link rel="shortcut icon" href="/static/img/templ.png" type="image/png"/>
+			<link rel="stylesheet" href="/static/css/main.css" type="text/css"/>
+			<title>Todo List { title }</title>
+			<script src="/static/js/htmx.min.js"></script>
+			<script src="/static/js/hyperscript.min.js"></script>
+			<script src="/static/js/sweetalert2.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+		</head>
+		<body class="sample-transition" hx-boost="true">
+			<header>
+				if !isError {
+					@partials.Navbar(username, fromProtected)
+				}
+			</header>
+			<main class={ templ.KV("pt-24", !isError) }>
+				{ children... }
+				@partials.FlashMessages(errMsgs, sucMsgs)
+			</main>
+		</body>
+	</html>
+}

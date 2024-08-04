@@ -72,6 +72,16 @@ func createMigrations(dbName string, db *sql.DB) error {
 		FOREIGN KEY(created_by) REFERENCES users(id)
 	);`
 
+	stmt = `CREATE TABLE IF NOT EXISTS patterns (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		created_by INTEGER NOT NULL,
+		title VARCHAR(64) NOT NULL,
+		description VARCHAR(255) NULL,
+		status BOOLEAN DEFAULT(FALSE),
+		created_at DATETIME default CURRENT_TIMESTAMP,
+		FOREIGN KEY(created_by) REFERENCES users(id)
+	);`
+
 	_, err = db.Exec(stmt)
 	if err != nil {
 		return err

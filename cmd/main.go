@@ -44,8 +44,11 @@ func main() {
 	ts := services.NewTodoServices(services.Todo{}, store)
 	th := handlers.NewTaskHandler(ts)
 
+	ps := services.NewPatternServices(services.Pattern{}, store)
+	ph := handlers.NewPatternHandler(ps)
+
 	// Setting Routes
-	handlers.SetupRoutes(e, ah, th)
+	handlers.SetupRoutes(e, ah, th, ph)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8082"))

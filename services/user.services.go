@@ -31,42 +31,19 @@ func (us *UserServices) CreateUser(u User) error {
 		return err
 	}
 
-	stmt := `INSERT INTO users(email, password, username) VALUES($1, $2, $3)`
+	user := User{Email: u.Email, Password: string(hashedPassword), Username: u.Username}
 
-	_, err = us.UserStore.Db.Exec(
-		stmt,
-		u.Email,
-		string(hashedPassword),
-		u.Username,
-	)
-
-	return err
+	return us.UserStore.Db.Create(&user).Error
 }
 
 func (us *UserServices) CheckEmail(email string) (User, error) {
-
-	query := `SELECT id, email, password, username FROM users
-		WHERE email = ?`
-
-	stmt, err := us.UserStore.Db.Prepare(query)
-	if err != nil {
-		return User{}, err
+	user := User{Email: email}
+	result := us.UserStore.Db.Where(&user, "email").Find(&user)
+	if result.Error != nil {
+		return User{}, result.Error
 	}
 
-	defer stmt.Close()
-
-	us.User.Email = email
-	err = stmt.QueryRow(
-		us.User.Email,
-	).Scan(
-		&us.User.ID,
-		&us.User.Email,
-		&us.User.Password,
-		&us.User.Username,
-	)
-	if err != nil {
-		return User{}, err
-	}
+	us.User = user
 
 	return us.User, nil
 }

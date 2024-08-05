@@ -38,6 +38,10 @@ func main() {
 		e.Logger.Fatalf("failed to create store: %s", err)
 	}
 
+	store.Db.AutoMigrate(&services.User{})
+	store.Db.AutoMigrate(&services.Todo{})
+	store.Db.AutoMigrate(&services.Pattern{})
+
 	us := services.NewUserServices(services.User{}, store)
 	ah := handlers.NewAuthHandler(us)
 

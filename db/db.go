@@ -1,15 +1,15 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 
-	_ "github.com/mattn/go-sqlite3"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type Store struct {
-	Db *sql.DB
+	Db *gorm.DB
 }
 
 func NewStore(dbName string) (Store, error) {
@@ -18,19 +18,15 @@ func NewStore(dbName string) (Store, error) {
 		return Store{}, err
 	}
 
-	if err := createMigrations(dbName, Db); err != nil {
-		return Store{}, err
-	}
-
 	return Store{
 		Db,
 	}, nil
 }
 
-func getConnection(dbName string) (*sql.DB, error) {
+func getConnection(dbName string) (*gorm.DB, error) {
 	var (
 		err error
-		db  *sql.DB
+		db  *gorm.DB
 	)
 
 	if db != nil {
@@ -38,7 +34,7 @@ func getConnection(dbName string) (*sql.DB, error) {
 	}
 
 	// Init SQLite3 database
-	db, err = sql.Open("sqlite3", dbName)
+	db, err = gorm.Open(sqlite.Open(dbName), &gorm.Config{})
 	if err != nil {
 		// log.Fatalf("🔥 failed to connect to the database: %s", err.Error())
 		return nil, fmt.Errorf("🔥 failed to connect to the database: %s", err)
@@ -47,45 +43,4 @@ func getConnection(dbName string) (*sql.DB, error) {
 	log.Println("🚀 Connected Successfully to the Database")
 
 	return db, nil
-}
-
-func createMigrations(dbName string, db *sql.DB) error {
-	stmt := `CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		email VARCHAR(255) NOT NULL UNIQUE,
-		password VARCHAR(255) NOT NULL,
-		username VARCHAR(64) NOT NULL
-	);`
-
-	_, err := db.Exec(stmt)
-	if err != nil {
-		return err
-	}
-
-	stmt = `CREATE TABLE IF NOT EXISTS todos (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		created_by INTEGER NOT NULL,
-		title VARCHAR(64) NOT NULL,
-		description VARCHAR(255) NULL,
-		status BOOLEAN DEFAULT(FALSE),
-		created_at DATETIME default CURRENT_TIMESTAMP,
-		FOREIGN KEY(created_by) REFERENCES users(id)
-	);`
-
-	stmt = `CREATE TABLE IF NOT EXISTS patterns (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		created_by INTEGER NOT NULL,
-		title VARCHAR(64) NOT NULL,
-		description VARCHAR(255) NULL,
-		status BOOLEAN DEFAULT(FALSE),
-		created_at DATETIME default CURRENT_TIMESTAMP,
-		FOREIGN KEY(created_by) REFERENCES users(id)
-	);`
-
-	_, err = db.Exec(stmt)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

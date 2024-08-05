@@ -10,33 +10,33 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/tsironis/syntropic-studio/services"
-	"github.com/tsironis/syntropic-studio/views/pattern_views"
+	"github.com/tsironis/syntropic-studio/views/design_views"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
 
-/********** Handlers for Pattern Views **********/
+/********** Handlers for Design Views **********/
 
-type PatternService interface {
-	CreatePattern(t services.Pattern) (services.Pattern, error)
-	GetAllPatterns(createdBy int) ([]services.Pattern, error)
-	GetPatternById(t services.Pattern) (services.Pattern, error)
-	UpdatePattern(t services.Pattern) (services.Pattern, error)
-	DeletePattern(t services.Pattern) error
+type DesignService interface {
+	CreateDesign(t services.Design) (services.Design, error)
+	GetAllDesigns(createdBy int) ([]services.Design, error)
+	GetDesignById(t services.Design) (services.Design, error)
+	UpdateDesign(t services.Design) (services.Design, error)
+	DeleteDesign(t services.Design) error
 }
 
-func NewPatternHandler(ps PatternService) *PatternHandler {
+func NewDesignHandler(ps DesignService) *DesignHandler {
 
-	return &PatternHandler{
-		PatternServices: ps,
+	return &DesignHandler{
+		DesignServices: ps,
 	}
 }
 
-type PatternHandler struct {
-	PatternServices PatternService
+type DesignHandler struct {
+	DesignServices DesignService
 }
 
-func (th *PatternHandler) createPatternHandler(c echo.Context) error {
+func (th *DesignHandler) createDesignHandler(c echo.Context) error {
 	// isError = false
 	c.Set("ISERROR", false)
 	fromProtected, ok := c.Get("FROMPROTECTED").(bool)
@@ -45,34 +45,34 @@ func (th *PatternHandler) createPatternHandler(c echo.Context) error {
 	}
 
 	if c.Request().Method == "POST" {
-		pattern := services.Pattern{
-			CreatedBy:   c.Get(user_id_key).(int),
-			Title:       strings.Trim(c.FormValue("title"), " "),
-			Description: strings.Trim(c.FormValue("description"), " "),
+		design := services.Design{
+			CreatedBy: c.Get(user_id_key).(int),
+			Title:     strings.Trim(c.FormValue("title"), " "),
+			QGISData:  strings.Trim(c.FormValue("QGISData"), " "),
 		}
 
-		_, err := th.PatternServices.CreatePattern(pattern)
+		_, err := th.DesignServices.CreateDesign(design)
 		if err != nil {
 			return err
 		}
 
-		setFlashmessages(c, "success", "Pattern created successfully!!")
+		setFlashmessages(c, "success", "Design created successfully!!")
 
-		return c.Redirect(http.StatusSeeOther, "/pattern/list")
+		return c.Redirect(http.StatusSeeOther, "/design/list")
 	}
 
-	return renderView(c, pattern_views.PatternIndex(
-		"| Create Pattern",
+	return renderView(c, design_views.DesignIndex(
+		"| Create Design",
 		c.Get(username_key).(string),
 		fromProtected,
 		c.Get("ISERROR").(bool),
 		getFlashmessages(c, "error"),
 		getFlashmessages(c, "success"),
-		pattern_views.CreatePattern(),
+		design_views.CreateDesign(),
 	))
 }
 
-func (th *PatternHandler) patternListHandler(c echo.Context) error {
+func (th *DesignHandler) designListHandler(c echo.Context) error {
 	// isError = false
 	c.Set("ISERROR", false)
 	fromProtected, ok := c.Get("FROMPROTECTED").(bool)
@@ -82,28 +82,28 @@ func (th *PatternHandler) patternListHandler(c echo.Context) error {
 
 	userId := c.Get(user_id_key).(int)
 
-	patterns, err := th.PatternServices.GetAllPatterns(userId)
+	designs, err := th.DesignServices.GetAllDesigns(userId)
 	if err != nil {
 		return err
 	}
 
 	titlePage := fmt.Sprintf(
-		"| %s's Pattern List",
+		"| %s's Designs",
 		cases.Title(language.English).String(c.Get(username_key).(string)),
 	)
 
-	return renderView(c, pattern_views.PatternIndex(
+	return renderView(c, design_views.DesignIndex(
 		titlePage,
 		c.Get(username_key).(string),
 		fromProtected,
 		c.Get("ISERROR").(bool),
 		getFlashmessages(c, "error"),
 		getFlashmessages(c, "success"),
-		pattern_views.PatternList(titlePage, patterns),
+		design_views.DesignList(titlePage, designs),
 	))
 }
 
-func (th *PatternHandler) updatePatternHandler(c echo.Context) error {
+func (th *DesignHandler) updateDesignHandler(c echo.Context) error {
 	// isError = false
 	c.Set("ISERROR", false)
 	fromProtected, ok := c.Get("FROMPROTECTED").(bool)
@@ -116,12 +116,12 @@ func (th *PatternHandler) updatePatternHandler(c echo.Context) error {
 		return err
 	}
 
-	t := services.Pattern{
+	t := services.Design{
 		ID:        idParams,
 		CreatedBy: c.Get(user_id_key).(int),
 	}
 
-	pattern, err := th.PatternServices.GetPatternById(t)
+	design, err := th.DesignServices.GetDesignById(t)
 	if err != nil {
 		if strings.Contains(err.Error(), "no rows in result set") {
 
@@ -143,54 +143,54 @@ func (th *PatternHandler) updatePatternHandler(c echo.Context) error {
 
 	if c.Request().Method == "POST" {
 		var status bool
-		if c.FormValue("private") == "on" {
+		if c.FormValue("status") == "on" {
 			status = true
 		} else {
 			status = false
 		}
 
-		pattern := services.Pattern{
-			Title:       strings.Trim(c.FormValue("title"), " "),
-			Description: strings.Trim(c.FormValue("description"), " "),
-			Status:      status,
-			CreatedBy:   c.Get(user_id_key).(int),
-			ID:          idParams,
+		design := services.Design{
+			Title:     strings.Trim(c.FormValue("title"), " "),
+			QGISData:  strings.Trim(c.FormValue("qgis_data"), " "),
+			Status:    status,
+			CreatedBy: c.Get(user_id_key).(int),
+			ID:        idParams,
 		}
 
-		_, err := th.PatternServices.UpdatePattern(pattern)
+		_, err := th.DesignServices.UpdateDesign(design)
 		if err != nil {
 			return err
 		}
 
-		setFlashmessages(c, "success", "Pattern successfully updated!!")
+		setFlashmessages(c, "success", "Design successfully updated!!")
 
-		return c.Redirect(http.StatusSeeOther, "/pattern/list")
+		return c.Redirect(http.StatusSeeOther, "/design/list")
 	}
 
-	return renderView(c, pattern_views.PatternIndex(
-		fmt.Sprintf("| Edit Pattern #%d", pattern.ID),
+	return renderView(c, design_views.DesignIndex(
+		fmt.Sprintf("| Edit Design #%d", design.ID),
 		c.Get(username_key).(string),
 		fromProtected,
 		c.Get("ISERROR").(bool),
 		getFlashmessages(c, "error"),
 		getFlashmessages(c, "success"), // ↓ getting time zone from context ↓
-		pattern_views.UpdatePattern(pattern, c.Get(tzone_key).(string)),
+		design_views.UpdateDesign(design, c.Get(tzone_key).(string)),
 	))
 }
 
-func (th *PatternHandler) deletePatternHandler(c echo.Context) error {
+func (th *DesignHandler) deleteDesignHandler(c echo.Context) error {
 	idParams, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	t := services.Pattern{
+	t := services.Design{
 		CreatedBy: c.Get(user_id_key).(int),
 		ID:        idParams,
 	}
 
-	err = th.PatternServices.DeletePattern(t)
+	err = th.DesignServices.DeleteDesign(t)
 	if err != nil {
 		if strings.Contains(err.Error(), "an affected row was expected") {
 
@@ -210,12 +210,12 @@ func (th *PatternHandler) deletePatternHandler(c echo.Context) error {
 			))
 	}
 
-	setFlashmessages(c, "success", "Pattern successfully deleted!!")
+	setFlashmessages(c, "success", "Design successfully deleted!!")
 
-	return c.Redirect(http.StatusSeeOther, "/pattern/list")
+	return c.Redirect(http.StatusSeeOther, "/design/list")
 }
 
-func (th *PatternHandler) logoutHandler(c echo.Context) error {
+func (th *DesignHandler) logoutHandler(c echo.Context) error {
 	sess, _ := session.Get(auth_sessions_key, c)
 	// Revoke users authentication
 	sess.Values = map[interface{}]interface{}{

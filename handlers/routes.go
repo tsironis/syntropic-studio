@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHandler) {
+func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHandler, dh *DesignHandler) {
 	e.GET("/", ah.flagsMiddleware(ah.homeHandler))
 	e.GET("/login", ah.flagsMiddleware(ah.loginHandler))
 	e.POST("/login", ah.flagsMiddleware(ah.loginHandler))
@@ -30,6 +30,16 @@ func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHand
 	patternGroup.POST("/edit/:id", ph.updatePatternHandler)
 	patternGroup.DELETE("/delete/:id", ph.deletePatternHandler)
 	patternGroup.POST("/logout", ph.logoutHandler)
+
+	designGroup := e.Group("/design", ah.authMiddleware)
+	/* ↓ Protected Routes ↓ */
+	designGroup.GET("/list", dh.designListHandler)
+	designGroup.GET("/create", dh.createDesignHandler)
+	designGroup.POST("/create", dh.createDesignHandler)
+	designGroup.GET("/edit/:id", dh.updateDesignHandler)
+	designGroup.POST("/edit/:id", dh.updateDesignHandler)
+	designGroup.DELETE("/delete/:id", dh.deleteDesignHandler)
+	designGroup.POST("/logout", dh.logoutHandler)
 
 	/* ↓ Fallback Page ↓ */
 	e.GET("/*", RouteNotFoundHandler)

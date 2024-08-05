@@ -3,14 +3,14 @@ package auth_views
 import "github.com/tsironis/syntropic-studio/views/layout"
 
 templ Register(fromProtected bool) {
-	<section class="card w-fit bg-base-200 shadow-xl mx-auto mb-8">
+	<section class="card w-fit bg-base-200 mx-auto mb-8">
 		<div class="card-body pb-2">
 			<h1 class="card-title border-b border-b-slate-600 pb-[4px]">
 				Register User
 			</h1>
 			<form
 				hx-swap="transition:true"
-				class="rounded-xl drop-shadow-xl flex flex-col gap-4 w-96 p-8"
+				class="rounded-xl flex flex-col gap-4 w-96 p-8"
 				action=""
 				method="post"
 			>

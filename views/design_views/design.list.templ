@@ -1,0 +1,108 @@
+package design_views
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+
+	"github.com/tsironis/syntropic-studio/services"
+	"github.com/tsironis/syntropic-studio/views/layout"
+)
+
+templ DesignList(titlePage string, designs []services.Design) {
+	<div class="mx-6">
+		<div class="flex mx-auto border-b border-b-slate-600 gap-4 mb-8 pb-4">
+			<h1 class="text-2xl leading-10 font-bold text-center">
+				{ strings.Trim(titlePage, "| ") }
+			</h1>
+			<a hx-swap="transition:true" class="btn btn-success" href="/design/create">
+				Create new Design
+			</a>
+		</div>
+		<section class="overflow-auto mx-auto rounded-lg">
+			<table class="table table-zebra">
+				<!-- head -->
+				<thead class="">
+					<tr>
+						<th></th>
+						<th>Designs</th>
+						<th>Completed</th>
+						<th></th>
+					</tr>
+				</thead>
+				if len(designs) != 0 {
+					<tbody>
+						for _, design := range designs {
+							<tr>
+								<th>{ strconv.Itoa(int(design.ID)) }</th>
+								<td>{ design.Title }</td>
+								<td>
+									if design.Status {
+										✅
+									} else {
+										❌
+									}
+								</td>
+								<td class="flex justify-end gap-2">
+									<a
+										hx-swap="transition:true"
+										href={ templ.URL(fmt.Sprintf("/design/edit/%d", design.ID)) }
+										class="btn btn-neutral p-3 hover:scale-[1.1]"
+									>
+										Edit
+									</a>
+									<button
+										hx-swap="transition:true"
+										hx-delete={ fmt.Sprintf("/design/delete/%d", design.ID) }
+										hx-confirm={ fmt.Sprintf("Are you sure you want to delete the design with ID #%d?", design.ID) }
+										onClick="this.addEventListener('htmx:confirm', (e) => {
+										e.preventDefault()
+										Swal.fire({
+											title: 'Do you want to perform this action?',
+											text: `${e.detail.question}`,
+											icon: 'warning',
+											background: '#1D232A',
+											color: '#A6ADBA',
+											showCancelButton: true,
+											confirmButtonColor: '#3085d6',
+											cancelButtonColor: '#d33',
+											confirmButtonText: 'Yes, delete it!'
+										}).then((result) => {
+											if(result.isConfirmed) e.detail.issueRequest(true);
+										})
+									})"
+										hx-target="body"
+										class="btn btn-error p-3 hover:scale-[1.1]"
+									>
+										Delete
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				} else {
+					<tbody>
+						<tr>
+							<td colspan="4" align="center">
+								You do not have anything to do
+							</td>
+						</tr>
+					</tbody>
+				}
+			</table>
+		</section>
+	</div>
+}
+
+templ DesignIndex(
+	title,
+	username string,
+	fromProtected bool,
+	isError bool,
+	errMsgs, sucMsgs []string,
+	cmp templ.Component,
+) {
+	@layout.Base(title, username, fromProtected, isError, errMsgs, sucMsgs) {
+		@cmp
+	}
+}

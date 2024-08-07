@@ -10,8 +10,7 @@ templ Home(fromProtected bool) {
 		</p>
 		if !fromProtected {
 			<hr class="my-4 w-4/5 mx-auto opacity-25"/>
-			<p class="text-base font-thin">You have an account?</p>
-			<footer class="flex gap-4 justify-center">
+			<section class="flex gap-4">
 				<a
 					hx-swap="transition:true"
 					href="/login"
@@ -26,7 +25,7 @@ templ Home(fromProtected bool) {
 				>
 					Sign Up
 				</a>
-			</footer>
+			</section>
 		}
 	</section>
 }

@@ -42,6 +42,7 @@ func main() {
 	store.Db.AutoMigrate(&services.Todo{})
 	store.Db.AutoMigrate(&services.Pattern{})
 	store.Db.AutoMigrate(&services.Design{})
+	store.Db.AutoMigrate(&services.Species{})
 
 	us := services.NewUserServices(services.User{}, store)
 	ah := handlers.NewAuthHandler(us)
@@ -54,8 +55,11 @@ func main() {
 
 	ds := services.NewDesignServices(services.Design{}, store)
 	dh := handlers.NewDesignHandler(ds)
+
+	ss := services.NewSpeciesServices(services.Species{}, store)
+	sh := handlers.NewSpeciesHandler(ss)
 	// Setting Routes
-	handlers.SetupRoutes(e, ah, th, ph, dh)
+	handlers.SetupRoutes(e, ah, th, ph, dh, sh)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8082"))

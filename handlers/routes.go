@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHandler, dh *DesignHandler) {
+func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHandler, dh *DesignHandler, sh *SpeciesHandler) {
 	e.GET("/", ah.flagsMiddleware(ah.homeHandler))
 	e.GET("/login", ah.flagsMiddleware(ah.loginHandler))
 	e.POST("/login", ah.flagsMiddleware(ah.loginHandler))
@@ -29,7 +29,6 @@ func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHand
 	patternGroup.GET("/edit/:id", ph.updatePatternHandler)
 	patternGroup.POST("/edit/:id", ph.updatePatternHandler)
 	patternGroup.DELETE("/delete/:id", ph.deletePatternHandler)
-	patternGroup.POST("/logout", ph.logoutHandler)
 
 	designGroup := e.Group("/design", ah.authMiddleware)
 	/* ↓ Protected Routes ↓ */
@@ -39,7 +38,15 @@ func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHand
 	designGroup.GET("/edit/:id", dh.updateDesignHandler)
 	designGroup.POST("/edit/:id", dh.updateDesignHandler)
 	designGroup.DELETE("/delete/:id", dh.deleteDesignHandler)
-	designGroup.POST("/logout", dh.logoutHandler)
+
+	speciesGroup := e.Group("/species", ah.authMiddleware)
+	/* ↓ Protected Routes ↓ */
+	speciesGroup.GET("/list", sh.speciesListHandler)
+	speciesGroup.GET("/create", sh.createSpeciesHandler)
+	speciesGroup.POST("/create", sh.createSpeciesHandler)
+	speciesGroup.GET("/edit/:id", sh.updateSpeciesHandler)
+	speciesGroup.POST("/edit/:id", sh.updateSpeciesHandler)
+	speciesGroup.DELETE("/delete/:id", sh.deleteSpeciesHandler)
 
 	/* ↓ Fallback Page ↓ */
 	e.GET("/*", RouteNotFoundHandler)

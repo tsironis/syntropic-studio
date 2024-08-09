@@ -1,0 +1,113 @@
+package species_views
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+
+	"github.com/tsironis/syntropic-studio/services"
+	"github.com/tsironis/syntropic-studio/views/layout"
+)
+
+templ SpeciesList(titlePage string, species []services.Species) {
+	<div class="mx-6">
+		<div class="flex mx-auto border-b border-b-slate-600 gap-4 mb-8 pb-4">
+			<h1 class="text-2xl font-bold text-center">
+				{ strings.Trim(titlePage, "| ") }
+			</h1>
+			<a hx-swap="transition:true" class="btn btn-success p-4 hover:scale-[1.1]" href="/species/create">
+				Create a new species
+			</a>
+		</div>
+		<section class="overflow-auto rounded-lg">
+			<table class="table table-zebra">
+				<!-- head -->
+				<thead class="">
+					<tr>
+						<th>ID</th>
+						<th>Species</th>
+						<th>Common name</th>
+						<th>Stratum</th>
+						<th>System</th>
+						<th>Lifecycle</th>
+						<th>Biological form</th>
+						<th>USDA Hardiness Zone</th>
+						<th>Primary function</th>
+						<th>Secondary function</th>
+					</tr>
+				</thead>
+				if len(species) != 0 {
+					<tbody>
+						for _, s := range species {
+							<tr>
+								<th>{ strconv.Itoa(int(s.ID)) }</th>
+								<td>{ s.BinomialNomenclature }</td>
+								<td>{ s.CommonName }</td>
+								<td>{ s.Stratum }</td>
+								<td>{ s.System }</td>
+								<td>{ s.Lifecycle }</td>
+								<td>{ s.BiologicalForm }</td>
+								<td>{ s.USDAHardinessZone }</td>
+								<td>{ s.PrimaryFunction }</td>
+								<td>{ s.SecondaryFunction }</td>
+								<td class="flex justify-center gap-2">
+									<a
+										hx-swap="transition:true"
+										href={ templ.URL(fmt.Sprintf("/species/edit/%d", s.ID)) }
+										class="btn btn-primary p-3 hover:scale-[1.1]"
+									>
+										Edit
+									</a>
+									<button
+										hx-delete={ fmt.Sprintf("/species/delete/%d", s.ID) }
+										hx-confirm={ fmt.Sprintf("Are you sure you want to delete the species with ID #%d?", s.ID) }
+										onClick="this.addEventListener('htmx:confirm', (e) => {
+										e.preventDefault()
+										Swal.fire({
+											title: 'Do you want to perform this action?',
+											text: `${e.detail.question}`,
+											icon: 'warning',
+											background: '#1D232A',
+											color: '#A6ADBA',
+											showCancelButton: true,
+											confirmButtonColor: '#3085d6',
+											cancelButtonColor: '#d33',
+											confirmButtonText: 'Yes, delete it!'
+										}).then((result) => {
+											if(result.isConfirmed) e.detail.issueRequest(true);
+										})
+									})"
+									hx-target="body"
+									class="btn btn-error p-3 hover:scale-[1.1]"
+								>
+									Delete
+								</button>
+							</td>
+						</tr>
+					}
+				</tbody>
+			} else {
+				<tbody>
+					<tr>
+						<td colspan="4" align="center">
+							You do not have anything to do
+						</td>
+					</tr>
+				</tbody>
+			}
+		</table>
+	</section>
+}
+
+templ SpeciesIndex(
+	title,
+	username string,
+	fromProtected bool,
+	isError bool,
+	errMsgs, sucMsgs []string,
+	cmp templ.Component,
+) {
+	@layout.Base(title, username, fromProtected, isError, errMsgs, sucMsgs) {
+		@cmp
+	}
+}

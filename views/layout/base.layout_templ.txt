@@ -3,4 +3,4 @@
 </header>
 <main class=\"
 \">
-</main></body></html>
+</main></body><script>\n\t\t\tfunction calculateValue(obj1, obj2) {\n\t\t\t\tlet stratum = [];\n\t\t\t\tdocument.getElementsByName('stratum[]').forEach((element) => {\n\t\t\t\t\tif (element.checked) {\n\t\t\t\t\t\tstratum.push(element.value);\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\treturn stratum.join(', ');\n\t\t\t}\n\t\t</script></html>

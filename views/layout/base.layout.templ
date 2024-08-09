@@ -35,5 +35,16 @@ templ Base(title, username string, fromProtected, isError bool, errMsgs, sucMsgs
 				@partials.FlashMessages(errMsgs, sucMsgs)
 			</main>
 		</body>
+		<script>
+			function calculateValue(obj1, obj2) {
+				let stratum = [];
+				document.getElementsByName('stratum[]').forEach((element) => {
+					if (element.checked) {
+						stratum.push(element.value);
+					}
+				});
+				return stratum.join(', ');
+			}
+		</script>
 	</html>
 }

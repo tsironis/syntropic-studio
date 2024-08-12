@@ -96,7 +96,7 @@ func (th *SpeciesHandler) speciesListHandler(c echo.Context) error {
 	}
 
 	titlePage := fmt.Sprintf(
-		"| %s's Species List",
+		"| %s's Species",
 		cases.Title(language.English).String(c.Get(username_key).(string)),
 	)
 

@@ -1,39 +1,41 @@
 package pattern_views
 
 templ CreatePattern() {
-	<h1 class="text-2xl font-bold text-center mb-8">
-		Create new Pattern
-	</h1>
-	<section class="max-w-2xl w-4/5 h-96 mx-auto rounded-lg">
-		<form class="rounded-xl flex flex-col gap-4 w-11/12 p-4 mx-auto" action="" method="post" hx-swap="transition:true">
-			<label class="flex flex-col justify-start gap-2">
-				Title:
-				<input
-					class="input input-bordered input-primary"
-					type="text"
-					name="title"
-					required
-					autofocus
-					minlength="3"
-					maxlength="64"
-				/>
-			</label>
-			<label class="flex flex-col justify-start gap-2">
-				Description:
-				<textarea
-					class="textarea textarea-primary h-36 max-h-36"
-					name="description"
-					maxlength="255"
-				></textarea>
-			</label>
-			<footer class="card-actions flex gap-4 justify-end">
-				<button class="btn btn-primary p-4 hover:scale-[1.1]">
-					Save
-				</button>
-				<a href="/pattern/list" class="btn btn-neutral p-4 hover:scale-[1.1]">
-					Cancel
-				</a>
-			</footer>
-		</form>
-	</section>
+	<div class="mx-6">
+		<h1 class="text-2xl font-bold mb-8">
+			Create a new pattern
+		</h1>
+		<section class="max-w-2xl w-4/5 h-96 rounded-lg">
+			<form class="rounded-xl flex flex-col gap-4 w-11/12" action="" method="post" hx-swap="transition:true">
+				<label class="flex flex-col justify-start gap-2">
+					Title:
+					<input
+						class="input input-bordered input-primary"
+						type="text"
+						name="title"
+						required
+						autofocus
+						minlength="3"
+						maxlength="64"
+					/>
+				</label>
+				<label class="flex flex-col justify-start gap-2">
+					Description:
+					<textarea
+						class="textarea textarea-primary h-36 max-h-36"
+						name="description"
+						maxlength="255"
+					></textarea>
+				</label>
+				<footer class="card-actions flex gap-4 justify-start">
+					<button class="btn btn-success p-4 hover:scale-[1.1]">
+						Save
+					</button>
+					<a href="/pattern/list" class="btn btn-neutral p-4 hover:scale-[1.1]">
+						Cancel
+					</a>
+				</footer>
+			</form>
+		</section>
+	</div>
 }

@@ -1,11 +1,11 @@
 package species_views
 
 templ CreateSpecies() {
-	<section class="max-w-2xl w-4/5 h-96 mx-auto rounded-lg">
+	<div class="mx-6">
 		<h1 class="text-2xl font-bold mb-8">
 			Create a new species
 		</h1>
-		<form class="rounded-xl flex flex-col gap-4" action="" method="post" hx-swap="transition:true" hx-params="not stratum[]" hx-vals="js:{stratum: calculateValue()}">
+		<form class="max-w-2xl w-4/5 h-96 flex flex-col gap-4" action="" method="post" hx-swap="transition:true" hx-params="not stratum[]" hx-vals="js:{stratum: calculateValue()}">
 			<label class="flex flex-col justify-start gap-2">
 				Binomial Nomeclature
 				<input
@@ -178,7 +178,7 @@ templ CreateSpecies() {
 				<span class="label-text">Private - uncheck if you want to make this species publicly available</span>
 			</label>
 			<footer class="card-actions flex gap-4 justify-start">
-				<button class="btn btn-primary p-4 hover:scale-[1.1]">
+				<button class="btn btn-success p-4 hover:scale-[1.1]">
 					Save
 				</button>
 				<a href="/todo/list" class="btn btn-neutral p-4 hover:scale-[1.1]">
@@ -186,5 +186,5 @@ templ CreateSpecies() {
 				</a>
 			</footer>
 		</form>
-	</section>
+	</div>
 }

@@ -77,26 +77,27 @@ templ SpeciesList(titlePage string, species []services.Species) {
 											if(result.isConfirmed) e.detail.issueRequest(true);
 										})
 									})"
-									hx-target="body"
-									class="btn btn-error p-3 hover:scale-[1.1]"
-								>
-									Delete
-								</button>
+										hx-target="body"
+										class="btn btn-error p-3 hover:scale-[1.1]"
+									>
+										Delete
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				} else {
+					<tbody>
+						<tr>
+							<td colspan="4" align="center">
+								You do not have anything to do
 							</td>
 						</tr>
-					}
-				</tbody>
-			} else {
-				<tbody>
-					<tr>
-						<td colspan="4" align="center">
-							You do not have anything to do
-						</td>
-					</tr>
-				</tbody>
-			}
-		</table>
-	</section>
+					</tbody>
+				}
+			</table>
+		</section>
+	</div>
 }
 
 templ SpeciesIndex(

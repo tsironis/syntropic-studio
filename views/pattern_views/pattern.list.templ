@@ -10,51 +10,52 @@ import (
 )
 
 templ PatternList(titlePage string, patterns []services.Pattern) {
-	<div class="flex justify-between max-w-2xl mx-auto border-b border-b-slate-600 mb-8 pb-2">
-		<h1 class="text-2xl font-bold text-center">
-			{ strings.Trim(titlePage, "| ") }
-		</h1>
-		<a hx-swap="transition:true" class="btn btn-info p-4 hover:scale-[1.1]" href="/pattern/create">
-			New
-		</a>
-	</div>
-	<section class="overflow-auto max-w-2xl max-h-96 mx-auto rounded-lg">
-		<table class="table table-zebra">
-			<!-- head -->
-			<thead class="">
-				<tr>
-					<th></th>
-					<th>Patterns</th>
-					<th>Status</th>
-					<th class="text-center">Options</th>
-				</tr>
-			</thead>
-			if len(patterns) != 0 {
-				<tbody>
-					for _, pattern := range patterns {
-						<tr>
-							<th>{ strconv.Itoa(int(pattern.ID)) }</th>
-							<td>{ pattern.Title }</td>
-							<td>
-								if pattern.Status {
-									✅
-								} else {
-									❌
-								}
-							</td>
-							<td class="flex justify-center gap-2">
-								<a
-									hx-swap="transition:true"
-									href={ templ.URL(fmt.Sprintf("/pattern/edit/%d", pattern.ID)) }
-									class="btn btn-primary p-3 hover:scale-[1.1]"
-								>
-									Edit
-								</a>
-								<button
-									hx-swap="transition:true"
-									hx-delete={ fmt.Sprintf("/pattern/delete/%d", pattern.ID) }
-									hx-confirm={ fmt.Sprintf("Are you sure you want to delete the pattern with ID #%d?", pattern.ID) }
-									onClick="this.addEventListener('htmx:confirm', (e) => {
+	<div class="mx-6">
+		<div class="flex mx-auto border-b border-b-slate-600 gap-4 mb-8 pb-4">
+			<h1 class="text-2xl font-bold text-center">
+				{ strings.Trim(titlePage, "| ") }
+			</h1>
+			<a hx-swap="transition:true" class="btn btn-success p-4 hover:scale-[1.1]" href="/pattern/create">
+				Create a new pattern
+			</a>
+		</div>
+		<section class="overflow-auto rounded-lg">
+			<table class="table table-zebra">
+				<!-- head -->
+				<thead class="">
+					<tr>
+						<th></th>
+						<th>Patterns</th>
+						<th>Status</th>
+						<th class="text-center">Options</th>
+					</tr>
+				</thead>
+				if len(patterns) != 0 {
+					<tbody>
+						for _, pattern := range patterns {
+							<tr>
+								<th>{ strconv.Itoa(int(pattern.ID)) }</th>
+								<td>{ pattern.Title }</td>
+								<td>
+									if pattern.Status {
+										✅
+									} else {
+										❌
+									}
+								</td>
+								<td class="flex justify-center gap-2">
+									<a
+										hx-swap="transition:true"
+										href={ templ.URL(fmt.Sprintf("/pattern/edit/%d", pattern.ID)) }
+										class="btn btn-primary p-3 hover:scale-[1.1]"
+									>
+										Edit
+									</a>
+									<button
+										hx-swap="transition:true"
+										hx-delete={ fmt.Sprintf("/pattern/delete/%d", pattern.ID) }
+										hx-confirm={ fmt.Sprintf("Are you sure you want to delete the pattern with ID #%d?", pattern.ID) }
+										onClick="this.addEventListener('htmx:confirm', (e) => {
 										e.preventDefault()
 										Swal.fire({
 											title: 'Do you want to perform this action?',
@@ -70,26 +71,27 @@ templ PatternList(titlePage string, patterns []services.Pattern) {
 											if(result.isConfirmed) e.detail.issueRequest(true);
 										})
 									})"
-									hx-target="body"
-									class="btn btn-error p-3 hover:scale-[1.1]"
-								>
-									Delete
-								</button>
+										hx-target="body"
+										class="btn btn-error p-3 hover:scale-[1.1]"
+									>
+										Delete
+									</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				} else {
+					<tbody>
+						<tr>
+							<td colspan="4" align="center">
+								You do not have anything to do
 							</td>
 						</tr>
-					}
-				</tbody>
-			} else {
-				<tbody>
-					<tr>
-						<td colspan="4" align="center">
-							You do not have anything to do
-						</td>
-					</tr>
-				</tbody>
-			}
-		</table>
-	</section>
+					</tbody>
+				}
+			</table>
+		</section>
+	</div>
 }
 
 templ PatternIndex(

@@ -88,7 +88,7 @@ func (th *TaskHandler) todoListHandler(c echo.Context) error {
 	}
 
 	titlePage := fmt.Sprintf(
-		"| %s's Task List",
+		"| %s's Tasks",
 		cases.Title(language.English).String(c.Get(username_key).(string)),
 	)
 

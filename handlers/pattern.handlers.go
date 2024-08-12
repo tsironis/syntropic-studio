@@ -88,7 +88,7 @@ func (th *PatternHandler) patternListHandler(c echo.Context) error {
 	}
 
 	titlePage := fmt.Sprintf(
-		"| %s's Pattern List",
+		"| %s's Patterns",
 		cases.Title(language.English).String(c.Get(username_key).(string)),
 	)
 

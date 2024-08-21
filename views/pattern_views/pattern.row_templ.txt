@@ -1,5 +1,5 @@
 <div class=\"mx-6\"><h1 class=\"text-2xl font-bold mb-8\">Update Pattern Row #
-</h1><form class=\"rounded-xl flex flex-col gap-4 w-11/12 px-2 py-8 mx-auto\" action=\"\" method=\"post\" hx-swap=\"transition:true\">
+</h1><form class=\"rounded-xl flex flex-col gap-4 w-11/12 px-2 py-8 mx-auto\" action=\"\" method=\"post\">
 <details class=\"collapse bg-base-200\"><summary class=\"collapse-title text-xl font-medium\">Slot 
  - 
 m</summary><div class=\"collapse-content bg-base-400\"><button class=\"btn btn-neutral\" hx-get=\"/pattern/search\" hx-swap=\"outerHTML\">Add species</button></div></details>

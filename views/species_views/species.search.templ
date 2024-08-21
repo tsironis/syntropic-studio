@@ -1,0 +1,33 @@
+package species_views
+
+import "github.com/tsironis/syntropic-studio/services"
+
+templ SpeciesSearch(species []services.Species) {
+	<table class="table table-zebra">
+		<!-- head -->
+		<thead class="">
+			<tr>
+				<th>Species</th>
+				<th>Common name</th>
+			</tr>
+		</thead>
+		if len(species) != 0 {
+			<tbody>
+				for _, s := range species {
+					<tr>
+						<td>{ s.BinomialNomenclature }</td>
+						<td>{ s.CommonName }</td>
+					</tr>
+				}
+			</tbody>
+		} else {
+			<tbody>
+				<tr>
+					<td colspan="2" align="center">
+						No species matching your search criteria.
+					</td>
+				</tr>
+			</tbody>
+		}
+	</table>
+}

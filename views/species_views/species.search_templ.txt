@@ -1,0 +1,8 @@
+<table class=\"table table-zebra\"><!-- head --><thead class=\"\"><tr><th>Species</th><th>Common name</th></tr></thead> 
+<tbody>
+<tr><td>
+</td><td>
+</td></tr>
+</tbody>
+<tbody><tr><td colspan=\"2\" align=\"center\">No species matching your search criteria.</td></tr></tbody>
+</table>

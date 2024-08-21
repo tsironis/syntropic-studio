@@ -45,6 +45,7 @@ func SetupRoutes(e *echo.Echo, ah *AuthHandler, th *TaskHandler, ph *PatternHand
 	speciesGroup := e.Group("/species", ah.authMiddleware)
 	/* ↓ Protected Routes ↓ */
 	speciesGroup.GET("/list", sh.speciesListHandler)
+	speciesGroup.GET("/search", sh.speciesSearchHandler)
 	speciesGroup.GET("/create", sh.createSpeciesHandler)
 	speciesGroup.POST("/create", sh.createSpeciesHandler)
 	speciesGroup.GET("/edit/:id", sh.updateSpeciesHandler)

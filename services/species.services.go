@@ -49,10 +49,21 @@ func (ts *SpeciesServices) CreateSpecies(t Species) (Species, error) {
 	return ts.Species, nil
 }
 
-func (ts *SpeciesServices) GetAllSpeciess(createdBy int) ([]Species, error) {
+func (ts *SpeciesServices) GetAllSpecies(createdBy int) ([]Species, error) {
 	speciess := []Species{}
 
 	result := ts.SpeciesStore.Db.Where("created_by = ?", createdBy).Order("created_at desc").Find(&speciess)
+	if result.Error != nil {
+		return []Species{}, result.Error
+	}
+	return speciess, nil
+}
+
+func (ts *SpeciesServices) SearchSpecies(createdBy int, search string) ([]Species, error) {
+	speciess := []Species{}
+
+	searchTerm := "%" + search + "%"
+	result := ts.SpeciesStore.Db.Where("created_by = ? AND binomial_nomenclature LIKE ? OR common_name LIKE ?", createdBy, searchTerm, searchTerm).Order("created_at desc").Find(&speciess)
 	if result.Error != nil {
 		return []Species{}, result.Error
 	}

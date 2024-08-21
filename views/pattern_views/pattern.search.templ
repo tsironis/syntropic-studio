@@ -20,11 +20,11 @@ templ PatternSearch() {
 			type="search"
 			name="search"
 			placeholder="Begin Typing To Search Species..."
-			hx-post="/search"
+			hx-get="/species/search"
 			hx-trigger="input changed delay:500ms, search"
 			hx-target="#search-results"
 			hx-indicator=".htmx-indicator"
 		/>
 	</label>
-	<table class="table"></table>
+	<div id="search-results"></div>
 }

@@ -19,7 +19,8 @@ import (
 
 type SpeciesService interface {
 	CreateSpecies(t services.Species) (services.Species, error)
-	GetAllSpeciess(createdBy int) ([]services.Species, error)
+	GetAllSpecies(createdBy int) ([]services.Species, error)
+	SearchSpecies(createdBy int, search string) ([]services.Species, error)
 	GetSpeciesById(t services.Species) (services.Species, error)
 	UpdateSpecies(t services.Species) (services.Species, error)
 	DeleteSpecies(t services.Species) error
@@ -90,7 +91,7 @@ func (th *SpeciesHandler) speciesListHandler(c echo.Context) error {
 
 	userId := c.Get(user_id_key).(int)
 
-	allSpecies, err := th.SpeciesServices.GetAllSpeciess(userId)
+	allSpecies, err := th.SpeciesServices.GetAllSpecies(userId)
 	if err != nil {
 		return err
 	}
@@ -109,6 +110,24 @@ func (th *SpeciesHandler) speciesListHandler(c echo.Context) error {
 		getFlashmessages(c, "success"),
 		species_views.SpeciesList(titlePage, allSpecies),
 	))
+}
+
+func (th *SpeciesHandler) speciesSearchHandler(c echo.Context) error {
+	// isError = false
+	c.Set("ISERROR", false)
+	// fromProtected, ok := c.Get("FROMPROTECTED").(bool)
+	// if !ok {
+	// 	return errors.New("invalid type for key 'FROMPROTECTED'")
+	// }
+
+	userId := c.Get(user_id_key).(int)
+
+	allSpecies, err := th.SpeciesServices.SearchSpecies(userId, c.QueryParam("search"))
+	if err != nil {
+		return err
+	}
+
+	return renderView(c, species_views.SpeciesSearch(allSpecies))
 }
 
 func (th *SpeciesHandler) updateSpeciesHandler(c echo.Context) error {

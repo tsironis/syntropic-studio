@@ -37,7 +37,7 @@ templ PatternList(titlePage string, patterns []services.Pattern) {
 								<th>{ strconv.Itoa(int(pattern.ID)) }</th>
 								<td>{ pattern.Title }</td>
 								<td>
-									if pattern.Status {
+									if pattern.Private {
 										✅
 									} else {
 										❌

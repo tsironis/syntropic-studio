@@ -8,7 +8,7 @@ templ CreatePattern() {
 		<section class="max-w-2xl w-4/5 h-96 rounded-lg">
 			<form class="rounded-xl flex flex-col gap-4 w-11/12" action="" method="post" hx-swap="transition:true">
 				<label class="flex flex-col justify-start gap-2">
-					Title:
+					Title
 					<input
 						class="input input-bordered input-primary"
 						type="text"
@@ -20,12 +20,47 @@ templ CreatePattern() {
 					/>
 				</label>
 				<label class="flex flex-col justify-start gap-2">
-					Description:
+					Description
 					<textarea
 						class="textarea textarea-primary h-36 max-h-36"
 						name="description"
 						maxlength="255"
 					></textarea>
+				</label>
+				<label class="flex flex-col justify-start gap-2">
+					Total distance (m)
+					<input
+						class="w-20 input input-bordered input-primary"
+						type="text"
+						name="total_distance"
+						value="10"
+						required
+						autofocus
+						minlength="3"
+						maxlength="64"
+					/>
+				</label>
+				<label class="flex flex-col justify-start gap-2">
+					Distance step (m)
+					<input
+						class="w-20 input input-bordered input-primary"
+						type="text"
+						name="distance_step"
+						value="0.25"
+						required
+						autofocus
+						minlength="3"
+						maxlength="64"
+					/>
+				</label>
+				<label class="cursor-pointer label justify-normal gap-2">
+					<input
+						type="checkbox"
+						class="checkbox checkbox-success"
+						name="private"
+						checked
+					/>
+					<span class="label-text">Private - uncheck if you want to make this pattern publicly available</span>
 				</label>
 				<footer class="card-actions flex gap-4 justify-start">
 					<button class="btn btn-success p-4 hover:scale-[1.1]">

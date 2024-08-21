@@ -17,12 +17,15 @@ func NewPatternServices(t Pattern, tStore db.Store) *PatternServices {
 }
 
 type Pattern struct {
-	ID          int       `json:"id"`
-	CreatedBy   int       `json:"created_by"`
-	Title       string    `json:"title"`
-	Description string    `json:"description,omitempty"`
-	Status      bool      `json:"status,omitempty"`
-	CreatedAt   time.Time `json:"created_at,omitempty"`
+	ID            int       `json:"id"`
+	CreatedBy     int       `json:"created_by"`
+	Title         string    `json:"title"`
+	TotalDistance int       `json:"total_distance,omitempty"`
+	DistanceStep  float64   `json:"step_distance,omitempty"`
+	RowData       float64   `json:"row_data,omitempty"`
+	Description   string    `json:"description,omitempty"`
+	Private       bool      `json:"private,omitempty"`
+	CreatedAt     time.Time `json:"created_at,omitempty"`
 }
 
 type PatternServices struct {
@@ -37,6 +40,8 @@ func (ts *PatternServices) CreatePattern(t Pattern) (Pattern, error) {
 	}
 
 	fmt.Printf("Pattern created: %d\n", t)
+
+	ts.Pattern = t
 
 	return ts.Pattern, nil
 }

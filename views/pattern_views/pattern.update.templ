@@ -33,12 +33,12 @@ templ UpdatePattern(pattern services.Pattern, tz string) {
 			<footer class="card-actions flex justify-between">
 				<div class="flex gap-6 items-center">
 					<label class="cursor-pointer label flex gap-2">
-						<span class="label-text">Status:</span>
+						<span class="label-text">Private:</span>
 						<input
 							type="checkbox"
 							class="checkbox checkbox-success"
 							name="status"
-							checked?={ pattern.Status }
+							checked?={ pattern.Private }
 						/>
 					</label>
 					<p class="label-text flex gap-2 items-center">

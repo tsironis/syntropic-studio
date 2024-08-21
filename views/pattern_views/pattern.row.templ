@@ -1,0 +1,24 @@
+package pattern_views
+
+import (
+	"github.com/tsironis/syntropic-studio/services"
+	"strconv"
+)
+
+templ PatternRow(pattern services.Pattern, tz string) {
+	<div class="mx-6">
+		<h1 class="text-2xl font-bold mb-8">
+			Update Pattern Row #{ strconv.Itoa(int(pattern.ID)) }
+		</h1>
+		<form class="rounded-xl flex flex-col gap-4 w-11/12 px-2 py-8 mx-auto" action="" method="post" hx-swap="transition:true">
+			for i := 0; i < int(float64(pattern.TotalDistance)/pattern.DistanceStep); i++ {
+				<details class="collapse bg-base-200">
+					<summary class="collapse-title text-xl font-medium">Slot { strconv.Itoa(i) } - { strconv.FormatFloat(float64(i) * pattern.DistanceStep, 'f', 2, 64 ) }m</summary>
+					<div class="collapse-content bg-base-400">
+						<button class="btn btn-neutral" hx-get="/pattern/search" hx-swap="outerHTML">Add species</button>
+					</div>
+				</details>
+			}
+		</form>
+	</div>
+}

@@ -45,20 +45,31 @@ func (th *PatternHandler) createPatternHandler(c echo.Context) error {
 	}
 
 	if c.Request().Method == "POST" {
+
+		distance_step, distance_step_err := strconv.ParseFloat(strings.Trim(c.FormValue("distance_step"), " "), 64)
+		if distance_step_err != nil {
+			return distance_step_err
+		}
+		total_distance, total_distance_err := strconv.Atoi(strings.Trim(c.FormValue("total_distance"), " "))
+		if total_distance_err != nil {
+			return total_distance_err
+		}
 		pattern := services.Pattern{
-			CreatedBy:   c.Get(user_id_key).(int),
-			Title:       strings.Trim(c.FormValue("title"), " "),
-			Description: strings.Trim(c.FormValue("description"), " "),
+			CreatedBy:     c.Get(user_id_key).(int),
+			Title:         strings.Trim(c.FormValue("title"), " "),
+			Description:   strings.Trim(c.FormValue("description"), " "),
+			TotalDistance: total_distance,
+			DistanceStep:  distance_step,
 		}
 
-		_, err := th.PatternServices.CreatePattern(pattern)
+		p, err := th.PatternServices.CreatePattern(pattern)
 		if err != nil {
 			return err
 		}
 
 		setFlashmessages(c, "success", "Pattern created successfully!!")
 
-		return c.Redirect(http.StatusSeeOther, "/pattern/list")
+		return c.Redirect(http.StatusSeeOther, fmt.Sprintf("/pattern/row/%d", p.ID))
 	}
 
 	return renderView(c, pattern_views.PatternIndex(
@@ -70,6 +81,144 @@ func (th *PatternHandler) createPatternHandler(c echo.Context) error {
 		getFlashmessages(c, "success"),
 		pattern_views.CreatePattern(),
 	))
+}
+
+func (th *PatternHandler) rowPatternHandler(c echo.Context) error {
+	// isError = false
+	c.Set("ISERROR", false)
+	fromProtected, ok := c.Get("FROMPROTECTED").(bool)
+	if !ok {
+		return errors.New("invalid type for key 'FROMPROTECTED'")
+	}
+
+	idParams, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	t := services.Pattern{
+		ID:        idParams,
+		CreatedBy: c.Get(user_id_key).(int),
+	}
+
+	pattern, err := th.PatternServices.GetPatternById(t)
+	if err != nil {
+		if strings.Contains(err.Error(), "no rows in result set") {
+
+			return echo.NewHTTPError(
+				echo.ErrNotFound.Code,
+				fmt.Sprintf(
+					"something went wrong: %s",
+					err,
+				))
+		}
+
+		return echo.NewHTTPError(
+			echo.ErrInternalServerError.Code,
+			fmt.Sprintf(
+				"something went wrong: %s",
+				err,
+			))
+	}
+
+	if c.Request().Method == "POST" {
+		var private bool
+		if c.FormValue("private") == "on" {
+			private = true
+		} else {
+			private = false
+		}
+
+		pattern := services.Pattern{
+			Title:       strings.Trim(c.FormValue("title"), " "),
+			Description: strings.Trim(c.FormValue("description"), " "),
+			Private:     private,
+			CreatedBy:   c.Get(user_id_key).(int),
+			ID:          idParams,
+		}
+
+		_, err := th.PatternServices.UpdatePattern(pattern)
+		if err != nil {
+			return err
+		}
+
+		setFlashmessages(c, "success", "Pattern successfully updated!!")
+
+		return c.Redirect(http.StatusSeeOther, "/pattern/list")
+	}
+
+	return renderView(c, pattern_views.PatternIndex(
+		fmt.Sprintf("| Edit Pattern #%d", pattern.ID),
+		c.Get(username_key).(string),
+		fromProtected,
+		c.Get("ISERROR").(bool),
+		getFlashmessages(c, "error"),
+		getFlashmessages(c, "success"), // ↓ getting time zone from context ↓
+		pattern_views.PatternRow(pattern, c.Get(tzone_key).(string)),
+	))
+}
+
+func (th *PatternHandler) searchPatternHandler(c echo.Context) error {
+	// isError = false
+	c.Set("ISERROR", false)
+
+	// idParams, err := strconv.Atoi(c.Param("id"))
+	// if err != nil {
+	// 	return err
+	// }
+	//
+	// t := services.Pattern{
+	// 	ID:        idParams,
+	// 	CreatedBy: c.Get(user_id_key).(int),
+	// }
+	//
+	// pattern, err := th.PatternServices.GetPatternById(t)
+	// if err != nil {
+	// 	if strings.Contains(err.Error(), "no rows in result set") {
+	//
+	// 		return echo.NewHTTPError(
+	// 			echo.ErrNotFound.Code,
+	// 			fmt.Sprintf(
+	// 				"something went wrong: %s",
+	// 				err,
+	// 			))
+	// 	}
+	//
+	// 	return echo.NewHTTPError(
+	// 		echo.ErrInternalServerError.Code,
+	// 		fmt.Sprintf(
+	// 			"something went wrong: %s",
+	// 			err,
+	// 		))
+	// }
+	//
+	// if c.Request().Method == "POST" {
+	// 	var private bool
+	// 	if c.FormValue("private") == "on" {
+	// 		private = true
+	// 	} else {
+	// 		private = false
+	// 	}
+	//
+	// 	pattern := services.Pattern{
+	// 		Title:         strings.Trim(c.FormValue("title"), " "),
+	// 		Description:   strings.Trim(c.FormValue("description"), " "),
+	// 		Private:       private,
+	// 		CreatedBy:     c.Get(user_id_key).(int),
+	// 		ID:            idParams,
+	// 	}
+	//
+	// 	_, err := th.PatternServices.UpdatePattern(pattern)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	//
+	// 	setFlashmessages(c, "success", "Pattern successfully updated!!")
+	//
+	// 	return c.Redirect(http.StatusSeeOther, "/pattern/list")
+	// }
+	//
+	return renderView(c, pattern_views.PatternSearch())
 }
 
 func (th *PatternHandler) patternListHandler(c echo.Context) error {
@@ -142,17 +291,17 @@ func (th *PatternHandler) updatePatternHandler(c echo.Context) error {
 	}
 
 	if c.Request().Method == "POST" {
-		var status bool
+		var private bool
 		if c.FormValue("private") == "on" {
-			status = true
+			private = true
 		} else {
-			status = false
+			private = false
 		}
 
 		pattern := services.Pattern{
 			Title:       strings.Trim(c.FormValue("title"), " "),
 			Description: strings.Trim(c.FormValue("description"), " "),
-			Status:      status,
+			Private:     private,
 			CreatedBy:   c.Get(user_id_key).(int),
 			ID:          idParams,
 		}
